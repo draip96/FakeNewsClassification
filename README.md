@@ -2,9 +2,9 @@
 
 ### Description
 
-This package demonstrates the fine-tuning process used to train the NELA-GT Fake News Classifier that can be found [here](https://huggingface.co/newsmediabias/FakeNews-Classifier-NELA-GT_GPT-Labels).
+This package demonstrates the fine-tuning process used to train the Fake News Classifier that can be found [here](https://huggingface.co/newsmediabias/FakeNews-Classifier-NELA-GT_GPT-Labels).
 
-The process begins by fine tuning and saving a transformer model on a large sample of the NELA-GT dataset with it's weak labels. A second, smaller sample of the dataset is then sampled and sent through OpenAI's API to ChatGPT to be re-labeled. The previously saved model is then further fine-tuned on these new labels, improving the accuracy of its classifications. 
+The process begins by fine tuning and saving a transformer model on a large sample of the dataset with it's weak labels. A second, smaller sample of the dataset is then sampled and sent through OpenAI's API to ChatGPT to be re-labeled. The previously saved model is then further fine-tuned on these new labels, improving the accuracy of its classifications. 
 
 Because the model is fine-tuned first on the weak labels, only a fraction of the dataset needs to be annotated by ChatGPT to improve performance.
 
@@ -17,7 +17,7 @@ In order of importance, here are the qualities we want this package to have:
 - **Performant.** While not as important as the first two factors, we do want to make our package reasonably fast and not too resource-hungry.
 
 ### Usage
-Choose a model and use the NELA-GT dataset to train a Fake News Classifier using FakeNewsClassifier.py.
+Choose a model and use any dataset to train a Fake News Classifier using FakeNewsClassifier.py.
 
     FakeNewsClassifier.py news_path labels_path -a API_KEY [-o ORG] 
     [-m MODEL_NAME] [-s SAMPLE_SIZE] [-e EPOCHS] [-b BATCH_SIZE] [-h] 
@@ -51,8 +51,7 @@ Choose a model and use the NELA-GT dataset to train a Fake News Classifier using
         
         pip install -r requirements.txt
 
-3. Download Nela GT: https://dataverse.harvard.edu/file.xhtml?fileId=6078140&version=2.0
-
+3. Download Your Dataset:
         Recommended Folder structure:
         
         NewsMediaBias/
@@ -85,7 +84,7 @@ Choose a model and use the NELA-GT dataset to train a Fake News Classifier using
 
 To build a sequence classifier using your own data, save a data frame as a pickle, and use the individual models to classify and annotate the data. 
 
-    NELAClassifier.py  news_path [-m MODEL_NAME] [-s SAMPLE_SIZE] 
+    Classifier.py  news_path [-m MODEL_NAME] [-s SAMPLE_SIZE] 
     [-t TRAIN_SPLIT] [-e EPOCHS] [-b BATCH_SIZE] [-h]
                         
     Optional Arguments:
@@ -158,7 +157,7 @@ To build a sequence classifier using your own data, save a data frame as a pickl
 
 3. Train the preliminary model:
 
-        python NELAClassifier.py --options
+        python Classifier.py --options
 
 4. Annotate the labels:
 
@@ -172,5 +171,5 @@ The final model is built on top of the preliminary model. This is done to reduce
 
 ### Implementation
 
-This package leverages OpenAI's ChatGPT model to augment weak labels. The models are trained on the NELA-GT fake news dataset for the purpose of sequence calssification. The DistilBERT, RoBERTa, DeBERTa and OPT models are available for testing. 
+This package leverages OpenAI's ChatGPT model to augment weak labels. The models are trained on fake news datasets for the purpose of sequence calssification. The DistilBERT, RoBERTa, DeBERTa and OPT models are available for testing. 
 
