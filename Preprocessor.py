@@ -2,6 +2,7 @@ import pandas as pd
 import os
 import glob
 
+
 def preprocess_data(news_path, labels_path):
     labels = get_labels(labels_path)
     articles = get_articles(news_path, labels)
