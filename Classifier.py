@@ -45,7 +45,7 @@ def preprocess_data_2(data, n_samples, train_split, test_split, tokenizer):
 
   return train_encodings, train_labels, test_encodings, test_labels
 
-class NELAgtDataset(torch.utils.data.Dataset):
+class BuildDataset(torch.utils.data.Dataset):
     def __init__(self, encodings, labels):
         self.encodings = encodings
         self.labels = labels
@@ -132,8 +132,8 @@ def main(NEWS_PATH = './datasets/articles.pkl',
   print(' Building Dataloader ')
   print('=====================')    
 
-  train_dataset = NELAgtDataset(train_encodings, train_labels)
-  test_dataset = NELAgtDataset(test_encodings, test_labels)
+  train_dataset = BuildDataset(train_encodings, train_labels)
+  test_dataset = BuildDataset(test_encodings, test_labels)
 
   print('Complete \n')
 
