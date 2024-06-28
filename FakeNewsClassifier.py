@@ -1,7 +1,7 @@
 import argparse
 import pandas as pd
-import NELAPreprocessor
-import NELAClassifier
+import Preprocessor
+import Classifier
 import GPTAnnotator
 import GPTClassifier
 
@@ -32,17 +32,17 @@ def main():
     args = parser.parse_args()
 
     print( args.news_path, args.model_name, args.epochs)
-    nela_path= NELAPreprocessor.main(NEWS_PATH=args.news_path,
+    data_path= Preprocessor.main(NEWS_PATH=args.news_path,
                     LABELS_PATH=args.labels_path)
-    NELAClassifier.main(MODEL_NAME = args.model_name,
+    Classifier.main(MODEL_NAME = args.model_name,
                    SAMPLE_SIZE = args.sample_size,
                    NUM_EPOCHS = args.epochs,
-                   NEWS_PATH=nela_path,
+                   NEWS_PATH=data_path,
                    BATCH_SIZE=args.batch_size)
 
     gpt_path = GPTAnnotator.main(API_KEY=args.api_key,
                        ORG=args.org,
-                       NEWS_PATH=nela_path,
+                       NEWS_PATH=data_path,
                        SAMPLE_SIZE=int(args.sample_size/5))
     GPTClassifier.main(MODEL_NAME = args.model_name,
                    SAMPLE_SIZE = int(args.sample_size/5),
