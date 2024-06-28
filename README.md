@@ -43,7 +43,7 @@ Choose a model and use any dataset to train a Fake News Classifier using FakeNew
 
 **Steps:**
 
-1. Clone:  https://github.com/VectorInstitute/NewsMediaBias/
+1. Clone This Repository
 
 2. Download Dependencies:
 
