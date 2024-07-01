@@ -137,9 +137,9 @@ def main(NEWS_PATH = './datasets/articles.pkl',
 
   print('Complete \n')
 
-  acc_metric = load_metric("accuracy")
-  auc_metric = load_metric("roc_auc")
-  f1_metric = load_metric("f1")
+  acc_metric = load_metric("accuracy", trust_remote_code=True)
+  auc_metric = load_metric("roc_auc", trust_remote_code=True)
+  f1_metric = load_metric("f1", trust_remote_code=True)
 
   def compute_metrics(eval_pred):
       logits, labels = eval_pred
