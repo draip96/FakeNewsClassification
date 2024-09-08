@@ -2,29 +2,27 @@ import torch
 import pandas as pd
 import time
 from datasets import Dataset
-from sklearn.model_selection import train_test_split
 from transformers import (
     AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig, 
     TrainingArguments, EarlyStoppingCallback
 )
 from trl import SFTTrainer
-from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
+from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training, PeftModel
+from trl import setup_chat_format
 
 # Constants
 SEED = 200
 MAX_SEQ_LENGTH = 2048
 torch_dtype = torch.float16
 attn_implementation = "eager"
-
 MODEL_NAME = "meta-llama/Meta-Llama-3-8B-Instruct"
 OUTPUT_DIRECTORY = "/results"
 ADAPTER_PATH = "/adapter"
 SAVE_TO = "/results/final-model"
 
-
 # Function to prepare the dataset for the chat model format
 def chat_function(row, tokenizer):
-    row_json = [
+    json_format = [
         {
             "role": "user",
             "content": (
@@ -48,7 +46,7 @@ def chat_function(row, tokenizer):
         },
         {"role": "assistant", "content": f"Label: {row['text_label']}"}
     ]
-    row["text"] = tokenizer.apply_chat_template(row_json, tokenize=False)
+    row["text"] = tokenizer.apply_chat_template(json_format, tokenize=False)
     return row
 
 # Load and prepare dataset
@@ -63,7 +61,7 @@ def load_and_prepare_data(train_path, val_path, tokenizer):
     return train_ds, val_ds
 
 # Model and tokenizer setup
-def get_tokenizer():
+def get_model_and_tokenizer():
     bnb_config = BitsAndBytesConfig(
         load_in_4bit=True,
         bnb_4bit_quant_type="nf4",
@@ -73,7 +71,7 @@ def get_tokenizer():
 
     model = AutoModelForCausalLM.from_pretrained(
         MODEL_NAME,
-        cache_dir=CACHE_DIR,
+        cache_dir=None,  # Set this to your desired cache directory
         quantization_config=bnb_config,
         attn_implementation=attn_implementation,
         device_map="auto"
@@ -101,7 +99,7 @@ def get_tokenizer():
 # Training arguments setup
 def get_training_arguments():
     return TrainingArguments(
-        OUTPUT_DIRECTORY=OUTPUT_DIRECTORY,
+        output_dir=OUTPUT_DIRECTORY,
         num_train_epochs=5,
         per_device_train_batch_size=4,
         per_device_eval_batch_size=4,
@@ -129,7 +127,7 @@ def main():
     train_path = "train.csv"
     val_path = "val.csv"
     
-    model, tokenizer = get_tokenizer()
+    model, tokenizer = get_model_and_tokenizer()
     training_arguments = get_training_arguments()
     train_ds, val_ds = load_and_prepare_data(train_path, val_path, tokenizer)
 
@@ -151,5 +149,27 @@ def main():
     hours, minutes = divmod((end_time - start_time) // 60, 60)
     print(f"Total training time taken: {hours:.0f} hours and {minutes:.0f} minutes")
 
+# Function to load and save the model with LoRA adapter
+def load_and_save_model_with_adapter():
+    base_model_reload = AutoModelForCausalLM.from_pretrained(
+        MODEL_NAME,
+        return_dict=True,
+        low_cpu_mem_usage=True,
+        device_map="auto",
+        trust_remote_code=True,
+    )
+
+    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+    base_model_reload, tokenizer = setup_chat_format(base_model_reload, tokenizer)
+
+    # Load LoRA adapter and merge
+    model = PeftModel.from_pretrained(base_model_reload, ADAPTER_PATH)
+    model = model.merge_and_unload()
+
+    # Save the merged model and tokenizer
+    model.save_pretrained(SAVE_TO, safe_serialization=True, max_shard_size='4GB')
+    tokenizer.save_pretrained(SAVE_TO)
+
 if __name__ == "__main__":
     main()
+    load_and_save_model_with_adapter()
