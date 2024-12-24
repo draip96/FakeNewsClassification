@@ -129,7 +129,7 @@ To build a sequence classifier using your own data, save a data frame as a pickl
 
 **Steps:**
 
-1. Clone:  https://github.com/VectorInstitute/NewsMediaBias/
+1. Clone:  [https://github.com/VectorInstitute/NewsMediaBias/](https://github.com/VectorInstitute/news-media-bias)
 
 2. Download Dependencies:
 
