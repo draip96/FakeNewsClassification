@@ -1,5 +1,41 @@
 # This package demonstrates the usage of ChatGPT to augment weak labels for more accurate Fake News classification
 
+
+### 📊 Data
+
+This repository is built upon publicly available and curated datasets for fake news detection and generative AI annotations. If you're conducting research in misinformation, language model evaluation, or political media bias, these resources will be valuable.
+
+#### 🔗 Dataset Links
+
+* 🗳️ **[Fake News - US Elections 2024](https://huggingface.co/datasets/newsmediabias/fake_news_elections2024)**
+  Collection of news articles related to the 2024 U.S. elections, annotated with generative-AI-generated and human-verified labels.
+
+* 📰 **[NELA-GT GPT-Labels Dataset](https://huggingface.co/datasets/newsmediabias/NELA-GT_GPT-Labels_Dataset)**
+  An extension of the NELA-GT dataset with GPT-generated label annotations for veracity, relevance, and stance.
+
+* 🧾 **[Fake News – Labelled Data](https://huggingface.co/datasets/newsmediabias/fake_news_elections_labelled_data)**
+  Labeled fake news dataset for benchmarking BERT-like models and LLMs on misinformation detection.
+
+#### 📄 Citation
+
+If you use these datasets, please cite the following publication:
+
+```bibtex
+@article{raza2025fake,
+  title={Fake news detection: comparative evaluation of BERT-like models and large language models with generative AI-annotated data},
+  author={Raza, Shaina and Paulen-Patterson, Drai and Ding, Chen},
+  journal={Knowledge and Information Systems},
+  pages={1--26},
+  year={2025},
+  publisher={Springer}
+}
+```
+
+
+
+
+
+
 ### Description
 
 This package demonstrates the fine-tuning process used to train the Fake News Classifier that can be found [here](https://huggingface.co/newsmediabias/FakeNews-Classifier-NELA-GT_GPT-Labels).
